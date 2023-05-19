@@ -41,11 +41,6 @@ UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id = airtable_api.retr
 #table_id = "tblgl57TfI3f9a90Q"
 #ticket_id = "tblpCfgnHTYfUqonX"
 
-
-YEAR = "2023"
-MONTH = "05"
-DAY = "03"
-
 # TODO MATIN CHECK DE HIER ET AUJD, ET SOIR, CHECK DE AUJD AUJD
 
 
@@ -127,7 +122,7 @@ def reformat_review(review_):
     return output_
 
 
-def scrap(uuid_list):
+def scrap(uuid_list, YEAR, MONTH, DAY):
     logging.info("SCRAP BEGIN")
     with open(os.path.join(current_dir, "UberEatScrapping", "files", "cookies.txt"), "r") as file:
         cookies_final = file.read()
@@ -155,54 +150,60 @@ def scrap(uuid_list):
 
 
 if __name__ == "__main__":
-    # 1 - Retrieve reviews for sub list of uuids (for each sublist of uuid, is associated a sub list
-    # of records id, a base id, a ticket id and a store id
-    for sub_uuid_list, sub_record_id_list, base_id, \
-            ticket_id, store_in in \
-            zip(UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id):
 
-        logger.info("Sub uuid list: {} - sub record id list: {} - base_id: {}"
-                    " - ticket_id: {} - store_id: {}".format(sub_uuid_list, sub_record_id_list,
-                                                             base_id, ticket_id, store_in))
+    YEAR = "2023"
+    MONTH = "05"
 
-        if len(sub_uuid_list) != 0:
-            # We scrap each restaurant one by one (otherwise there are errors, we can not scrap a list of restau, values are wrong)
-            for uuid, record_id in zip(sub_uuid_list, sub_record_id_list):
-                logger.info("We scrap restaurant uuid: {}".format(uuid))
-                logger.info("Record id: {}".format(record_id))
-                try:
-                    reviews = scrap([uuid])
-                except:
-                    traceback.print_exc()
-                    reviews = None
+    for DAY in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
+                "11", "12", "13", "14", "15", "16", "17", "18"]:
+        # 1 - Retrieve reviews for sub list of uuids (for each sublist of uuid, is associated a sub list
+        # of records id, a base id, a ticket id and a store id
+        for sub_uuid_list, sub_record_id_list, base_id, \
+                ticket_id, store_in in \
+                zip(UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id):
 
-                # 2 - Insert each review in airtable
-                # We write in ticket id table
-                if reviews is None:
-                    logger.info("Error when scrapping sub_uuid_list: {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
-                elif reviews and len(reviews) != 0:
-                    logger.info("There are reviews for restaurants: {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
-                    airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
+            logger.info("Sub uuid list: {} - sub record id list: {} - base_id: {}"
+                        " - ticket_id: {} - store_id: {}".format(sub_uuid_list, sub_record_id_list,
+                                                                 base_id, ticket_id, store_in))
 
-                    for review in reviews:
-                        # Reformat review following Airtable format
-                        new_record = reformat_review(review)
-                        new_record['🏠 Stores'] = [record_id]
-                        # Check if review_id exist
-                        review_id = review["uuid"]
-                        logger.info("Review id: {}".format(review_id))
-                        review_id_exist = check_if_review_exist(review_id, base_id, ticket_id)
-                        if not review_id_exist:
-                            logger.info("Review id {} does not exist. Lets insert it".format(review_id))
-                            airtable_api.create_new_record(airtable_connexion, new_record)
-                        else:
-                            logger.info("Review id {} already exist.".format(review_id))
+            if len(sub_uuid_list) != 0:
+                # We scrap each restaurant one by one (otherwise there are errors, we can not scrap a list of restau, values are wrong)
+                for uuid, record_id in zip(sub_uuid_list, sub_record_id_list):
+                    logger.info("We scrap restaurant uuid: {}".format(uuid))
+                    logger.info("Record id: {}".format(record_id))
+                    try:
+                        reviews = scrap([uuid], YEAR, MONTH, DAY)
+                    except:
+                        traceback.print_exc()
+                        reviews = None
 
-                elif len(reviews) == 0:
-                    logger.info("No reviews for {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
-                else:
-                    pass
-    logger.info("End for {}/{}/{}".format(DAY, MONTH, YEAR))
+                    # 2 - Insert each review in airtable
+                    # We write in ticket id table
+                    if reviews is None:
+                        logger.info("Error when scrapping sub_uuid_list: {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
+                    elif reviews and len(reviews) != 0:
+                        logger.info("There are reviews for restaurants: {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
+                        airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
+
+                        for review in reviews:
+                            # Reformat review following Airtable format
+                            new_record = reformat_review(review)
+                            new_record['🏠 Stores'] = [record_id]
+                            # Check if review_id exist
+                            review_id = review["uuid"]
+                            logger.info("Review id: {}".format(review_id))
+                            review_id_exist = check_if_review_exist(review_id, base_id, ticket_id)
+                            if not review_id_exist:
+                                logger.info("Review id {} does not exist. Lets insert it".format(review_id))
+                                airtable_api.create_new_record(airtable_connexion, new_record)
+                            else:
+                                logger.info("Review id {} already exist.".format(review_id))
+
+                    elif len(reviews) == 0:
+                        logger.info("No reviews for {} on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
+                    else:
+                        pass
+        logger.info("End for {}/{}/{}".format(DAY, MONTH, YEAR))
 
 
 
