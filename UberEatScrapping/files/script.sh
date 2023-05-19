@@ -1,0 +1,18 @@
+curl 'https://merchants.ubereats.com/manager/graphql' \
+  -H 'authority: merchants.ubereats.com' \
+  -H 'accept: */*' \
+  -H 'accept-language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7' \
+  -H 'content-type: application/json' \
+  -H 'cookie: usl_rollout_id=1fece987-26b8-4e08-8067-d66bf23daad8; sid=QA.CAESEENu0PjHf03iomD0E28CnlQYsqe2pAYiATEqJDc4M2YzZGQyLTFkZTUtNGExNy04ZDQ4LWEzMTk0NmRhNDRiYzI880zBTSkvFgKo6bYMBge7b8XmzZKaArNuZW2_Ch48PnVxrdJS9ypq85KcMM8V7r183zcrui9zU0RiYTCcOgExQg0udWJlcmVhdHMuY29t.Z5OkBqtqzPFEmsEJfSP_834rSXnl4ZnasZoYFJdi4f0; _ua={"session_id":"a0563fa8-5895-427e-b1d9-7cc9e8ac6bc1","session_time_ms":1684407989701}; selectedRestaurant=70a7b829-3126-4ef0-9e93-f6e361633270; udi-id=MntFWmMe0Wb13x7M4eOKTH9ovMzZVB5K6ee1dpz0nRsOMSkQ1gPFwuhB5m81a7hi9/FQnTYlsRkUkhD7lqzpqjwEhYIwn+ljSyND2Q+wZpQLKPz9FMKwGI442X7KnSB39sfpVXhzA0nc9b0GPbxJnGHaBE6tPs2KslC7rI42SBNUjA2AooQ0N94YbHbL/yzh1+KW2RXl5Qt0NCj7u1m7Fw==b+Wg+m12ARlDsSaqMCaGSA==2CzqTCkee0tRnJarpxhJrbt/WHMDsfbIx8KAe9afKW8=; jwt-session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODQ0MDc5OTAsImV4cCI6MTY4NTAxMjc5MH0.nCyN803bZvEEfDeu8wQBAJ5mOjaq0TC-WtDLzZa7fl8; mp_adec770be288b16d9008c964acfba5c2_mixpanel=%7B%22distinct_id%22%3A%20%22783f3dd2-1de5-4a17-8d48-a31946da44bc%22%2C%22%24device_id%22%3A%20%221882e8a4628978-0846834d0d1aad-1c525634-13c680-1882e8a4629f9d%22%2C%22%24initial_referrer%22%3A%20%22https%3A%2F%2Fauth.uber.com%2F%22%2C%22%24initial_referring_domain%22%3A%20%22auth.uber.com%22%2C%22%24user_id%22%3A%20%22783f3dd2-1de5-4a17-8d48-a31946da44bc%22%7D; _cc=AR2UxgC%2B8Gbkd6oYobI2VVdI; _cid_cc=AR2UxgC%2B8Gbkd6oYobI2VVdI; udi-fingerprint=hK6WW540/+qT9FTUvu3GSvLjO4f4oUu9Ze5Jce7+u4dmupvFXZ+h981bczxD3qECvAcWtBbLCkyNlFzPSI/l1A==VYInvQpeGMYx2l/XH+BAkWRncdGPSh9f6hFZayQ5hjs=; ' \
+  -H 'origin: https://merchants.ubereats.com' \
+  -H 'referer: https://merchants.ubereats.com/manager/home/00f1d562-41ef-4749-8017-ca261d3d53a0/feedback/reviews' \
+  -H 'sec-ch-ua: "Google Chrome";v="113", "Chromium";v="113", "Not-A.Brand";v="24"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' \
+  -H 'x-csrf-token: x' \
+  --data-raw $'{"operationName":"EaterReviews","variables":{"restaurantUUIDs":["b1b647d8-1cb4-432e-8506-c6b66e91c5c9"],"lastTimestamp":null,"lastWorkflowUUID":null,"filters":{"starRating":null,"tagsValue":null,"dateRange":{"start": "2023-05-03"  ,"end":"2023-05-03" }},"limit":50},"query":"fragment eaterReview on EaterReview {\\n  uuid\\n  timestamp\\n  rating\\n  comment\\n  tags\\n  menuItemReviews {\\n    id\\n    rating\\n    name\\n    comment\\n    tags\\n    __typename\\n  }\\n  eater {\\n    uuid\\n    name\\n    profileURL\\n    __typename\\n  }\\n  eaterTotalOrders\\n  order {\\n    workflowUUID\\n    deliveredAt\\n    orderTotal\\n    currencyCode\\n    appVariant\\n    restaurant {\\n      uuid\\n      name\\n      __typename\\n    }\\n    __typename\\n  }\\n  isReplyScheduled\\n  reply {\\n    uuid\\n    promotion {\\n      uuid\\n      flatValue\\n      __typename\\n    }\\n    __typename\\n  }\\n  __typename\\n}\\n\\nquery EaterReviews($restaurantUUIDs: [ID\u0021]\u0021, $limit: Int, $lastTimestamp: String, $lastWorkflowUUID: String, $filters: EaterReviewFilterInput) {\\n  eaterReviews(\\n    restaurantUUIDs: $restaurantUUIDs\\n    limit: $limit\\n    lastTimestamp: $lastTimestamp\\n    lastWorkflowUUID: $lastWorkflowUUID\\n    filters: $filters\\n  ) {\\n    ...eaterReview\\n    __typename\\n  }\\n}\\n"}' \
+  --compressed
