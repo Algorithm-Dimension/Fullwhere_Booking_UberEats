@@ -5,6 +5,7 @@ import logging
 import traceback
 import requests
 import warnings
+import datetime
 
 import airtable_api
 
@@ -36,15 +37,13 @@ AIRTABLE_API_KEY = 'pat0HdLihEwG7kT9n.bfa0cee24f25c4a2e23fcc3c7d4bfc498533c6b67b
 
 UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id = airtable_api.retrieve_all_uuids_and_records_ids()
 
-#UUID_LIST = ["0b00b8b6-bbf2-494d-b50e-feedef92659a"]
-#base_id = "app4sy6FFFwlcssKY"
-#table_id = "tblgl57TfI3f9a90Q"
-#ticket_id = "tblpCfgnHTYfUqonX"
 
+current_date = datetime.date.today()
 
-YEAR = "2023"
-MONTH = "05"
-DAY = "03"
+YEAR = current_date.strftime("%Y")
+MONTH = current_date.strftime("%m")
+DAY = current_date.strftime("%d")
+
 
 # TODO MATIN CHECK DE HIER ET AUJD, ET SOIR, CHECK DE AUJD AUJD
 
@@ -68,11 +67,6 @@ def define_curl_command(uuid_list, YEAR, MONTH, DAY):
 
 current_dir = os.getcwd()
 CURL_NAME = os.path.join(current_dir,"UberEatScrapping", "files", "script.sh")
-
-#uuid_list = ["208d5aef-d809-4b0e-b06d-c70bc853d5b0", "9514659e-d353-408c-99c2-d7be771114d3",
-#             "00f1d562-41ef-4749-8017-ca261d3d53a0", "434ad85d-0e2f-4442-88c3-f1154f8ea2d7",
-#             "8d589eac-ce08-4dce-a7a9-79b3f9b776d7", "0b00b8b6-bbf2-494d-b50e-feedef92659a",
-#             "afe55a32-aadf-4ad9-82cd-c43249023253"]
 
 
 def check_if_review_exist(review_id, base_id, ticket_id):
@@ -166,7 +160,8 @@ if __name__ == "__main__":
                                                              base_id, ticket_id, store_in))
 
         if len(sub_uuid_list) != 0:
-            # We scrap each restaurant one by one (otherwise there are errors, we can not scrap a list of restau, values are wrong)
+            # We scrap each restaurant one by one (otherwise there are errors,
+            # we can not scrap a list of restaurant, values are wrong)
             for uuid, record_id in zip(sub_uuid_list, sub_record_id_list):
                 logger.info("We scrap restaurant uuid: {}".format(uuid))
                 logger.info("Record id: {}".format(record_id))
