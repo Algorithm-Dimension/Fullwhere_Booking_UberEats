@@ -91,7 +91,7 @@ def create_new_record(airtable_connexion, new_record):
 def retrieve_all_uuids_and_records_ids():
     # 1 - Retrieve Bases & Tables Ids
     bases_id, tickets_id, stores_id = retrieve_bases_tickets_stores_id()
-    bases_id, tickets_id, stores_id = bases_id[5:8], tickets_id[5:8], stores_id[5:8]
+    #bases_id, tickets_id, stores_id = bases_id[5:8], tickets_id[5:8], stores_id[5:8]
 
     all_uuids = []
     all_records_ids = []
