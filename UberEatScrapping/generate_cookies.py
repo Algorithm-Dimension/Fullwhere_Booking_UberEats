@@ -63,7 +63,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # TODO A FAIRE TEST POUR SAVOIR LA DUREE DE VIE D'UN COOKIE
     main()
 
 

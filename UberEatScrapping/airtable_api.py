@@ -1,19 +1,68 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =============================================================================
+# Created By  : Remy Adda & Arie Bonan
+# Created Date: 2023
+# =============================================================================
+# Functions related to Airtable
+# =============================================================================
+
+
 from airtable import Airtable
 import requests
 import pandas as pd
+import logging
+from logging.handlers import RotatingFileHandler
 
-AIRTABLE_API_KEY = 'pat0HdLihEwG7kT9n.bfa0cee24f25c4a2e23fcc3c7d4bfc498533c6b67bd8cb4c2ca9e897b0a7c4ae'
+from parameter import *
 
 
-def airtable_access_specific_base_and_table(AIRTABLE_BASE_ID, AIRTABLE_STORE_ID):
+logger = logging.getLogger(__name__)
+
+
+def setup_logging(logger):
+    logger.setLevel(logging.DEBUG)
+    file_handler = logging.handlers.RotatingFileHandler('logs.log', maxBytes=1048576, backupCount=5)
+    file_handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+
+def check_if_review_exist(review_id, base_id, ticket_id):
     """
 
-    :param AIRTABLE_BASE_ID: ID database dans airtable (BASE ID column)
-    :param AIRTABLE_STORE_ID: Id de la table (store)
+    """
+    url = "https://api.airtable.com/v0/{}/{}?filterByFormula=" \
+          "%7BReview+ID%7D%3D%22{}%22".format(base_id, ticket_id, review_id)
+
+    headers = {
+        'Authorization': 'Bearer ' + AIRTABLE_API_KEY
+    }
+    response = requests.get(url, headers=headers)
+    logger.info(response)
+    logger.info(response.json())
+
+    if response.status_code == 200:
+        data = response.json()
+        # if len == 0, it means that the request did not find this review id, so we can insert in Airtable
+        if len(data["records"]) == 0:
+            return False
+        else:
+            return True
+    else:
+        logger.debug("Request error to get the review_id: {}".format(review_id))
+        return True
+
+
+def airtable_access_specific_base_and_table(airtable_base_id, airtable_store_id):
+    """
+
+    :param airtable_base_id: ID database dans airtable (BASE ID column)
+    :param airtable_store_id: Id de la table (store)
     :return: connexion
     """
-    print("Connection to base: {} - table: {}".format(AIRTABLE_BASE_ID, AIRTABLE_STORE_ID))
-    airtable_connexion = Airtable(AIRTABLE_BASE_ID, AIRTABLE_STORE_ID, AIRTABLE_API_KEY)
+    airtable_connexion = Airtable(airtable_base_id, airtable_store_id, AIRTABLE_API_KEY)
     return airtable_connexion
 
 
@@ -46,7 +95,7 @@ def retrieve_bases_tickets_stores_id():
         stores_id = [couple[2] for couple in filtered_values_abc.tolist()]
 
         assert len(bases_id) == len(tickets_id) == len(stores_id)
-        print("Total elements in bases_id list: {}".format(len(bases_id)))
+        logger.debug("Total elements in bases_id list: {}".format(len(bases_id)))
         return bases_id, tickets_id, stores_id
 
 
@@ -67,7 +116,6 @@ def retrieve_uuid(airtable_connexion, base_id, store_id, max_records=None):
             all_uuids.append(record['fields']["restaurant_uuid"])
             all_records_ids.append(record['fields']["Record ID"])
         else:
-            #print("missing uuid in base: {} and table {}".format(base_id, store_id))
             pass
     print("Total uuids for base: {} and table {}: {}".format(base_id, store_id, len(all_uuids)))
     return all_uuids, all_records_ids
@@ -90,14 +138,14 @@ def create_new_record(airtable_connexion, new_record):
 
 def retrieve_all_uuids_and_records_ids():
     # 1 - Retrieve Bases & Tables Ids
+    logger.info("Retriving bases, tickets and stores ids ...")
     bases_id, tickets_id, stores_id = retrieve_bases_tickets_stores_id()
     #bases_id, tickets_id, stores_id = bases_id[5:8], tickets_id[5:8], stores_id[5:8]
 
     all_uuids = []
     all_records_ids = []
 
-    print("Scrapping of all restaurants uuids and records ids by base and store")
-    print(100*"=")
+    logger.info("Retrieving  all restaurants uuids and records ids by base and store ...")
 
     for base_id, store_id in zip(bases_id, stores_id):
         airtable_con = airtable_access_specific_base_and_table(base_id, store_id)
@@ -106,32 +154,7 @@ def retrieve_all_uuids_and_records_ids():
         all_uuids.append(uuids_by_base_and_store)
         all_records_ids.append(record_id_by_base_and_store)
 
-    print("Total uuids (sublists) for all bases and stores: {}".format(len(all_uuids)))
-    print("Total records ids (sublists) for all bases and stores: {}".format(len(all_records_ids)))
+    logger.info("Total uuids (sublists) for all bases and stores: {}".format(len(all_uuids)))
+    logger.info("Total records ids (sublists) for all bases and stores: {}".format(len(all_records_ids)))
 
     return all_uuids, all_records_ids, bases_id, tickets_id, stores_id
-
-
-
-
-
-
-
-#new_record = {
-#    'Name': 'John Doe',
-#    'Email': 'johndoe@example.com',
-#    'Phone': '+1234567890'
-#}
-#created_record = airtable.insert(new_record)
-#print('Created record:', created_record['fields'])
-
-# Example of updating an existing record
-#record_id_to_update = 'RECORD_ID_TO_UPDATE'
-#updated_record = airtable.update(record_id_to_update, {'Email': 'newemail@example.com'})
-#print('Updated record:', updated_record['fields'])
-
-# Example of deleting a record
-#record_id_to_delete = 'RECORD_ID_TO_DELETE'
-#deleted_record = airtable.delete(record_id_to_delete)
-#print('Deleted record:', deleted_record['fields'])
-
