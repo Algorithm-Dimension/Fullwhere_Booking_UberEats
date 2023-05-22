@@ -15,12 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 def setup_logging(logger):
-    logger.setLevel(logging.DEBUG)
-    file_handler = logging.handlers.RotatingFileHandler('logs.log', maxBytes=1048576, backupCount=5)
-    file_handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    file_handlers = [h for h in logger.handlers if isinstance(h, logging.FileHandler)]
+    if not file_handlers:
+        file_handler = logging.FileHandler('logs.log')
+        file_handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
 
 def define_curl_command(uuid_list, year, month, day):
