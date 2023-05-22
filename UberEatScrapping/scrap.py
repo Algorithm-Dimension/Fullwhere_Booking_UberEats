@@ -46,6 +46,7 @@ def reformat_review(review):
     output_["Review text"] = review["comment"]
     output_["Number of orders"] = review["eaterTotalOrders"]
     output_["Order amount"] = review["order"]["orderTotal"]
+    output_["Reviewer ID"] = review["eater"]["uuid"]
     output_["Reviewer firstname"] = review["eater"]["name"].split(" ")[0]
     output_['🏠 Stores'] = review["order"]["restaurant"]["uuid"]
     output_["Review date"] = review["timestamp"][:10]  # format_date = "YYYY-MM-DD"
@@ -57,7 +58,7 @@ def reformat_review(review):
 
 def start_scrap(uuid_list, year, month, day, curl_name):
     logger.info("Start scrap UberEats")
-    with open(os.path.join(current_dir, "UberEatScrapping", "files", "cookies.txt"), "r") as file:
+    with open(os.path.join(current_dir, "files", "cookies.txt"), "r") as file:
         cookies_final = file.read()
 
     curl_get_reviews = utils.define_curl_command(uuid_list, year, month, day)
