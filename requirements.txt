@@ -2,9 +2,9 @@ airtable-python-wrapper==0.15.3
 asgiref==3.6.0
 certifi==2023.5.7
 charset-normalizer==3.1.0
-Django==4.2.1
+#Django==4.2.1
 idna==3.4
-libxml2-python==2.10.3
+#libxml2-python==2.10.3
 meson==1.1.0
 numpy==1.24.3
 pandas==2.0.1
