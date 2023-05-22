@@ -56,9 +56,9 @@ if __name__ == "__main__":
     TO_MONTH = current_date.strftime("%m")
     TO_DAY = current_date.strftime("%d")
 
-    FROM_YEAR = current_date.strftime("%Y")
-    FROM_MONTH = current_date.strftime("%m")
-    FROM_DAY = current_date.strftime("%d")
+    FROM_YEAR = yesterday_date.strftime("%Y")
+    FROM_MONTH = yesterday_date.strftime("%m")
+    FROM_DAY = yesterday_date.strftime("%d")
 
     logger.info(100*"=")
     logger.info("{}/{}/{}".format(TO_DAY, TO_MONTH, TO_YEAR))
