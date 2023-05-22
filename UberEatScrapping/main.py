@@ -36,6 +36,7 @@ logger.addHandler(file_handler)
 
 if __name__ == "__main__":
     # Log files
+    # TODO: mettre tous les logs dans un meme fichier
     airtable_api.setup_logging(logger)
     utils.setup_logging(logger)
     scrap.setup_logging(logger)

@@ -2,6 +2,7 @@
 .idea/
 *.pyc
 __pycache__/
+fullwhere_keys.pem
 
 UberEatScrapping/parameter.py
 
