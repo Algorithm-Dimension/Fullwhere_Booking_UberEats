@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     # Define the curl command
     current_dir = os.getcwd()
-    curl_name = os.path.join(current_dir, "UberEatScrapping", "files", "script.sh")
+    curl_name = os.path.join(current_dir, "files", "script.sh")
 
     total_reviews = 0
 
