@@ -13,11 +13,13 @@ import traceback
 import warnings
 from logging.handlers import RotatingFileHandler
 import datetime
+from datetime import timedelta
 import time
 
 import airtable_api
 import utils
 import scrap
+import argparse
 
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -34,8 +36,11 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Today Only')
+    parser.add_argument('--today_only', action='store_true')
+    args = parser.parse_args()
+
     start_time = time.time()
     # Log files
     # TODO: mettre tous les logs dans un meme fichier
@@ -45,13 +50,18 @@ if __name__ == "__main__":
 
     # Define the current date
     current_date = datetime.date.today()
+    yesterday_date = current_date - timedelta(days=1)
 
-    YEAR = current_date.strftime("%Y")
-    MONTH = current_date.strftime("%m")
-    DAY = current_date.strftime("%d")
+    TO_YEAR = current_date.strftime("%Y")
+    TO_MONTH = current_date.strftime("%m")
+    TO_DAY = current_date.strftime("%d")
+
+    FROM_YEAR = current_date.strftime("%Y")
+    FROM_MONTH = current_date.strftime("%m")
+    FROM_DAY = current_date.strftime("%d")
 
     logger.info(100*"=")
-    logger.info("{}/{}/{}".format(DAY, MONTH, YEAR))
+    logger.info("{}/{}/{}".format(TO_DAY, TO_MONTH, TO_YEAR))
     logger.info(100 * "=")
 
     # Define the curl command
@@ -80,21 +90,30 @@ if __name__ == "__main__":
             for uuid, record_id in zip(sub_uuid_list, sub_record_id_list):
                 logger.info("We scrap restaurant uuid: {}".format(uuid))
                 logger.info("{} - Record id: {}".format(uuid, record_id))
-                try:
-                    reviews = scrap.start_scrap([uuid], YEAR, MONTH, DAY, curl_name)
-                except Exception as e:
-                    traceback.print_exc()
-                    logger.error("{} - Error: {}".format(uuid, str(e)))
-                    reviews = None
+                if args.today_only:
+                    try:
+                        reviews = scrap.start_scrap([uuid], TO_YEAR, TO_MONTH, TO_DAY, TO_YEAR, TO_MONTH, TO_DAY,
+                                                    curl_name)
+                    except Exception as e:
+                        traceback.print_exc()
+                        logger.error("{} - Error: {}".format(uuid, str(e)))
+                        reviews = None
+                else:
+                    try:
+                        reviews = scrap.start_scrap([uuid], FROM_YEAR, FROM_MONTH, FROM_DAY, TO_YEAR, TO_MONTH, TO_DAY, curl_name)
+                    except Exception as e:
+                        traceback.print_exc()
+                        logger.error("{} - Error: {}".format(uuid, str(e)))
+                        reviews = None
 
                 # 2 - Insert each review in airtable
                 # We write in ticket id table
                 logger.info("{} - Insert data into Airtable".format(uuid))
                 if reviews is None:
                     logger.info("{} - Reviews is None: Error when scrapping sub_uuid_list: {} "
-                                "on {}/{}/{}".format(uuid, uuid, DAY, MONTH, YEAR))
+                                "on {}/{}/{}".format(uuid, uuid, TO_DAY, TO_MONTH, TO_YEAR))
                 elif reviews and len(reviews) != 0:
-                    logger.info("{} There are reviews on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
+                    logger.info("{} There are reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
                     airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
 
                     logger.info("{} - Lets reformat and insert into Airtable all the reviews".format(uuid))
@@ -115,11 +134,11 @@ if __name__ == "__main__":
                             logger.info("{} - Review id {} already exist.".format(uuid, review_id))
 
                 elif len(reviews) == 0:
-                    logger.info("{} - No reviews on {}/{}/{}".format(uuid, DAY, MONTH, YEAR))
+                    logger.info("{} - No reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
                 else:
                     pass
 
-    logger.info("End for {}/{}/{}".format(DAY, MONTH, YEAR))
+    logger.info("End for {}/{}/{}".format(TO_DAY, TO_MONTH, TO_YEAR))
     logger.info("Total reviews inserted: {}".format(total_reviews))
     end_time = time.time()
     total_time_script = end_time - start_time

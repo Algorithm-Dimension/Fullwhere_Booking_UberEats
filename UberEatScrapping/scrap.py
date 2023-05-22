@@ -57,12 +57,12 @@ def reformat_review(review):
     return output_
 
 
-def start_scrap(uuid_list, year, month, day, curl_name):
+def start_scrap(uuid_list, from_year, from_month, from_day, to_year, to_month, to_day, curl_name):
     logger.info("Start scrap UberEats")
     with open(os.path.join(current_dir, "files", "cookies.txt"), "r") as file:
         cookies_final = file.read()
 
-    curl_get_reviews = utils.define_curl_command(uuid_list, year, month, day)
+    curl_get_reviews = utils.define_curl_command(uuid_list, from_year, from_month, from_day, to_year, to_month, to_day)
     curl_get_reviews[5] = curl_get_reviews[5].format(cookies_final)
     with open(curl_name, "w") as file:
         for line_ in curl_get_reviews:
