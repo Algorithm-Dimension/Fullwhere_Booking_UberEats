@@ -13,6 +13,7 @@ import traceback
 import warnings
 from logging.handlers import RotatingFileHandler
 import datetime
+import time
 
 import airtable_api
 import utils
@@ -35,6 +36,7 @@ logger.addHandler(file_handler)
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     # Log files
     # TODO: mettre tous les logs dans un meme fichier
     airtable_api.setup_logging(logger)
@@ -119,6 +121,9 @@ if __name__ == "__main__":
 
     logger.info("End for {}/{}/{}".format(DAY, MONTH, YEAR))
     logger.info("Total reviews inserted: {}".format(total_reviews))
+    end_time = time.time()
+    total_time_script = end_time - start_time
+    logger.info("Durée totale du script: {}".format(total_time_script))
 
 
 
