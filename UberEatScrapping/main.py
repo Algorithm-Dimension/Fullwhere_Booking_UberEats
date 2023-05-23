@@ -34,7 +34,6 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-
 if __name__ == "__main__":
     start_time = time.time()
     # Log files
@@ -56,7 +55,9 @@ if __name__ == "__main__":
 
     # Define the curl command
     current_dir = os.getcwd()
-    curl_name = os.path.join(current_dir, "files", "script.sh")
+    curl_name = os.path.join(os.path.join(os.path.dirname(__file__), "files", "script.sh"))
+    print(curl_name)
+    print(os.path.join(os.path.dirname(__file__)))
 
     total_reviews = 0
 
