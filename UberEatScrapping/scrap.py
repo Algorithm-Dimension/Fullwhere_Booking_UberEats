@@ -18,7 +18,7 @@ from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
 
-current_dir = os.getcwd()
+current_dir = os.path.dirname(__file__)
 
 
 def setup_logging(logger):
