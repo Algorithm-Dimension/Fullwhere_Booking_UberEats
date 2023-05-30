@@ -42,7 +42,6 @@ def check_if_review_exist(review_id, base_id, ticket_id):
     }
     response = requests.get(url, headers=headers)
     logger.info(response)
-    logger.info(response.json())
 
     if response.status_code == 200:
         data = response.json()
