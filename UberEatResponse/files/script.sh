@@ -1,0 +1,18 @@
+curl 'https://merchants.ubereats.com/manager/graphql' \
+  -H 'authority: merchants.ubereats.com' \
+  -H 'accept: */*' \
+  -H 'accept-language: fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7' \
+  -H 'content-type: application/json' \
+  -H 'cookie: usl_rollout_id=5ba0e076-fff8-457d-92d0-9fb540b4113b; sid=QA.CAESEN1IQTKTX0SgvC_3cIqqbIcYyJ7bpAYiATEqJDc4M2YzZGQyLTFkZTUtNGExNy04ZDQ4LWEzMTk0NmRhNDRiYzI8RkCF01aW5AKqc8Pjgm7t5V2jUeTT5XY8tyo3ON77moJIw0V1PNiGa2Ry_PLWK4hzCQIbJKIwLoZEAMDuOgExQg0udWJlcmVhdHMuY29t.zv0tZTbVz5Gt76S9UpaL9sHM8i0dlBb8iIE1xA0ovDo; _ua={"session_id":"8ffab7df-4d82-4cb3-8299-cda81290778a","session_time_ms":1685013069912}; selectedRestaurant=2c809c58-39d0-490f-8213-bf87aab618d9; udi-id=6poSiOz8d/7JyM/HJ28UVwwdZM81GiH6G1gY0a5m+i7MzYF6xe9MHeAE072VnWCn7iqfrSmnuyf3wEHoyJh5IHULsqxm9HhmANAcnlMNpMbtTmSPb9R0jdjVqHK4Z4uYCv9QUZpRd6xqYFQQDkGwNoSHizgAuLanEH1Hv5LeQM1xqOtN7SKFg64sHAZBTwk3nluMzeMEQBh/hMxpmv9Ygw==uIlfQADn/EK5dIQEIqTlEA==iRUVpMrWHhpAW/lZNC7rShE7N7MA+Ki79QCZUDgqJTY=; jwt-session=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODUwMTMwNzMsImV4cCI6MTY4NTYxNzg3M30.hYIRhPyvRLrLdrGbxjLzqXCwl5Ep9rn9GwvVfUD36Yw; mp_adec770be288b16d9008c964acfba5c2_mixpanel=%7B%22distinct_id%22%3A%20%22783f3dd2-1de5-4a17-8d48-a31946da44bc%22%2C%22%24device_id%22%3A%20%22188529b1b962b9-04329efc02e998-1c525634-129790-188529b1b97a5e%22%2C%22%24initial_referrer%22%3A%20%22https%3A%2F%2Fauth.uber.com%2F%22%2C%22%24initial_referring_domain%22%3A%20%22auth.uber.com%22%2C%22%24user_id%22%3A%20%22783f3dd2-1de5-4a17-8d48-a31946da44bc%22%7D; _cc=AVbL6D1pfEaRUcv1vsUObM86; _cid_cc=AVbL6D1pfEaRUcv1vsUObM86; udi-fingerprint=JLlfJRQehIysRp9xN+35frCsroeM6YArO0WLiIgE1zcmcK2TpcRjiBhDFpYL/FVUWL7h9szY/JFpy/Bj10j6Pg==IBxp7d3ygzXQzjJeq/aiB26yK/alF1NbD8sbSfBPxQ8=; _uds={"deviceSessionId":"8861c2be-7d9c-45da-b8cd-9ef7514d4ba2","userHash":"a2988d29a48fb32141b95707f3547b88dec4b0f9ef5bdcaf585cff2f477739ce"}' \
+  -H 'origin: https://merchants.ubereats.com' \
+  -H 'referer: https://merchants.ubereats.com/manager/home/59ea8c82-e76e-571f-9d3d-ff8ddf6d7639/feedback/reviews/010dad85-aab4-4de7-9f17-c33e60cb8740?start=2023-05-24&end=2023-05-24' \
+  -H 'sec-ch-ua: "Google Chrome";v="113", "Chromium";v="113", "Not-A.Brand";v="24"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' \
+  -H 'x-csrf-token: x' \
+  --data-raw $'{"operationName":"SubmitReply","variables":{"workflowUUID":"1cb8b81b-7b3f-4da0-8672-e0d6c2e11f1f","restaurantUUID":"93923e20-b1b5-5791-a736-a2695feef1ed","comment":"Hello Aurelien, On sait que tu es fan de nos pâtes mais tu savais que nous proposons aussi des burgers à tomber ? Un grand MERCI de nous être fidèle 🙏🏻 L\'équipe Cala","promotionValue":"TIER_1","eaterUUID":"51d230f8-fdc5-4552-a3b3-1ec7d689f172","appVariant":"UBEREATS"},"query":"mutation SubmitReply($workflowUUID: String\u0021, $restaurantUUID: String\u0021, $comment: String\u0021, $promotionValue: PromotionValue, $eaterUUID: String\u0021, $appVariant: String\u0021) {\\n  submitEaterReviewReply(\\n    reply: {workflowUUID: $workflowUUID, restaurantUUID: $restaurantUUID, comment: $comment, promotionValue: $promotionValue, eaterUUID: $eaterUUID, appVariant: $appVariant}\\n  ) {\\n    uuid\\n    userUUID\\n    timestamp\\n    comment\\n    promotion {\\n      uuid\\n      flatValue\\n      formattedValue\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n"}' \
+  --compressed
