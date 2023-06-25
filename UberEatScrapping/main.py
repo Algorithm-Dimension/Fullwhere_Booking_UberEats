@@ -29,11 +29,12 @@ warnings.filterwarnings('ignore', category=UserWarning, append=True)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-file_handler = RotatingFileHandler('logs.log', maxBytes=1048576, backupCount=5)
+file_handler = logging.FileHandler('logs.log')
 file_handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s --- %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(pathname)s:%(lineno)d')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+
 
 
 if __name__ == "__main__":

@@ -14,8 +14,6 @@ import utils
 import subprocess
 import json
 
-from logging.handlers import RotatingFileHandler
-
 logger = logging.getLogger(__name__)
 
 current_dir = os.path.dirname(__file__)
@@ -26,7 +24,7 @@ def setup_logging(logger):
     if not file_handlers:
         file_handler = logging.FileHandler('logs.log')
         file_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(pathname)s:%(lineno)d')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
