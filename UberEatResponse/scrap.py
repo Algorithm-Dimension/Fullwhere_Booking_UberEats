@@ -12,9 +12,7 @@ import logging
 import os
 import utils
 import subprocess
-import json
 
-from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
 
@@ -46,8 +44,8 @@ def start_response(review_id, restaurant_id, comments, reviewer_id, coupon_, cur
 
     os.chmod(curl_name, 0o755)
     result = subprocess.run(["bash", curl_name], capture_output=True, text=True)
-    print(review_id, restaurant_id, reviewer_id, comments)
-    print(result.stdout)
+    logger.info(review_id, restaurant_id, reviewer_id, comments)
+    logger.info(result.stdout)
     print("=" * 100)
 
     return result.returncode

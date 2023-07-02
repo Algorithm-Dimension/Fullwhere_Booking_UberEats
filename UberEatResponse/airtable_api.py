@@ -12,7 +12,6 @@ from airtable import Airtable
 import requests
 import pandas as pd
 import logging
-from logging.handlers import RotatingFileHandler
 
 from parameter import *
 
@@ -86,7 +85,7 @@ def retrieve_all_bases_tickets_and_stores():
 def update_ar_reply_true(airtable_connexion, id_):
 
     created_record = airtable_connexion.update(record_id=id_, fields={"AR reply": True})
-    print('Created record:', created_record['fields'])
+    logger.info('Created record:', created_record['fields'])
 
 
 def get_rest_uuid(bases_id, stores_id, store_id, headers):

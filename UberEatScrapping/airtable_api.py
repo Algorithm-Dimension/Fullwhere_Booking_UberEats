@@ -12,7 +12,6 @@ from airtable import Airtable
 import requests
 import pandas as pd
 import logging
-from logging.handlers import RotatingFileHandler
 
 from parameter import *
 
@@ -25,7 +24,7 @@ def setup_logging(logger):
     if not file_handlers:
         file_handler = logging.FileHandler('logs.log')
         file_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(pathname)s:%(lineno)d')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -42,7 +41,6 @@ def check_if_review_exist(review_id, base_id, ticket_id):
     }
     response = requests.get(url, headers=headers)
     logger.info(response)
-    logger.info(response.json())
 
     if response.status_code == 200:
         data = response.json()
