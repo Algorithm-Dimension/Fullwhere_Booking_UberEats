@@ -46,7 +46,8 @@ if __name__ == "__main__":
     UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id = airtable_api.retrieve_all_uuids_and_records_ids()
     logger.info(" °°° End of retrieving restaurants, records, bases, tickets, stores ids °°° ")
 
-    for day in ["0{}".format(x) for x in range(4, 24)]:
+    for day in ["0{}".format(x) for x in range(1, 3)]:
+        print(day)
         for sub_uuid_list, sub_record_id_list, base_id, \
                 ticket_id, store_in in \
                 zip(UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id):
@@ -62,7 +63,7 @@ if __name__ == "__main__":
                     logger.info("We scrap restaurant uuid: {}".format(uuid))
                     logger.info("{} - Record id: {}".format(uuid, record_id))
                     try:
-                        reviews = scrap.start_scrap([uuid], "2023", "05", day, "2023", "05", day, curl_name)
+                        reviews = scrap.start_scrap([uuid], "2023", "07", day, "2023", "07", day, curl_name)
                     except Exception as e:
                         traceback.print_exc()
                         logger.error("{} - Error: {}".format(uuid, str(e)))
