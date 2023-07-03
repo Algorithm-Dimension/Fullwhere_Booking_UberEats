@@ -14,3 +14,12 @@ main.py: full pipeline:
     - retrieve all restaurants ids
     - scrap all the reviews for all the restaurants
     - insert all the reviews into airtable
+
+# CLI
+python main.py --today_only: Scrap uniquement aujourd'hui
+python main.py: Scrap hier et aujourd'hui
+
+# AWS
+* crontab -e
+* on run avec sudo dans crontab donc on install les requirements.txt avec sudo
+
