@@ -107,8 +107,12 @@ def define_coupon(coupon_value):
 
 
 def get_data_from_table(bases_id, tickets_id, stores_id, headers):
+    """
+    Retrieve waiting responses (les reponses des commentaires en attente)
+    """
 
     url = URL_.format(bases_id, tickets_id)
+    logger.info("Request Airtable API")
     response = requests.get(url, headers=headers)
     number_of_reviews = len(response.json()["records"])
     final_data = list()
@@ -122,5 +126,6 @@ def get_data_from_table(bases_id, tickets_id, stores_id, headers):
         if "Coupon" in list(review_["fields"].keys()):
             coupon_ = review_["fields"]["Coupon"]
         coupon_to_add = define_coupon(coupon_)
+        logger.info("Retrieve: review_id: {} - store_id: {}".format(review_id, store_id))
         final_data.append([review_id, store_id, reviewer_id, response_client, coupon_to_add, review_["id"]])
     return final_data

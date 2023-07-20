@@ -12,24 +12,42 @@ import airtable_api
 from scrap import start_response
 import parameter
 from tqdm import tqdm
+import logging
+import warnings
+
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("matplotlib").setLevel(logging.WARNING)
+warnings.filterwarnings('ignore', category=UserWarning, append=True)
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler('logs.log')
+file_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(pathname)s:%(lineno)d')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 
 HEADERS = {'Authorization': 'Bearer ' + parameter.AIRTABLE_API_KEY}
 
 if __name__ == "__main__":
     # Define the curl command
+    logger.info("Start UberEats Response ...")
     current_dir = os.getcwd()
     curl_name = os.path.join(current_dir, "files", "script.sh")
 
     bases_id, tickets_id, stores_id = airtable_api.retrieve_all_bases_tickets_and_stores()
 
-    for base_id, ticket_id, store_in in tqdm(zip(bases_id, tickets_id, stores_id)):
+    for base_id, ticket_id, store_id in tqdm(zip(bases_id, tickets_id, stores_id)):
+        logger.info("Connexion to base {} - ticket {} - store {}".format(base_id, ticket_id, store_id))
         airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
         try:
-            data_to_answer = airtable_api.get_data_from_table(base_id, ticket_id, store_in, HEADERS)
+            data_to_answer = airtable_api.get_data_from_table(base_id, ticket_id, store_id, HEADERS)
         except KeyError:
             continue
         if len(data_to_answer) > 0:
-            print(len(data_to_answer))
+            print("Total data_to_answer: {}".format(len(data_to_answer)))
         for data in data_to_answer:
             response_output = start_response(data[0], data[1], data[3], data[2], data[4], curl_name)
             if response_output == 0:

@@ -30,6 +30,9 @@ def setup_logging(logger):
 
 
 def start_response(review_id, restaurant_id, comments, reviewer_id, coupon_, curl_name):
+    logger.info("Start response for review id: {} - restaurant id: {}".format(review_id, restaurant_id))
+    logger.info("Reviewer id: {} - coupon: {} - comments: {}".format(reviewer_id, coupon_, comments))
+
     with open(os.path.join(current_dir, "files", "cookies.txt"), "r") as file:
         cookies_final = file.read()
 
@@ -44,8 +47,10 @@ def start_response(review_id, restaurant_id, comments, reviewer_id, coupon_, cur
 
     os.chmod(curl_name, 0o755)
     result = subprocess.run(["bash", curl_name], capture_output=True, text=True)
-    logger.info(review_id, restaurant_id, reviewer_id, comments)
-    logger.info(result.stdout)
+    logger.info("Review_id: {} - restaurant id: {} - reviewer id: {} - "
+                "comment: {}".format(review_id, restaurant_id, reviewer_id, comments))
+    logger.info("Result: {}".format(result.stdout))
+    logger.debug("Code linux command: {}".format(result.returncode))
     print("=" * 100)
 
     return result.returncode
