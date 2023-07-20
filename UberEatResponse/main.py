@@ -11,7 +11,6 @@ import os
 import airtable_api
 from scrap import start_response
 import parameter
-from tqdm import tqdm
 import logging
 import warnings
 
