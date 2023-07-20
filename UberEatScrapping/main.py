@@ -36,7 +36,6 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Today Only')
     parser.add_argument('--today_only', action='store_true')
