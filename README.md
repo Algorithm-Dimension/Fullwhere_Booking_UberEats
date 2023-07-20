@@ -5,7 +5,7 @@
 Voir Confluence pr les details de ce projet
 
 
-### Uber eat scrapping
+### Uber eat Scrapping
 
 airtable_api.py: functions related to airtable (insert new data, scrap all bases, tickets, stores ids, restaurants and records ids)
 utils.py: some utils functions (curl command)
@@ -15,12 +15,14 @@ main.py: full pipeline:
     - scrap all the reviews for all the restaurants
     - insert all the reviews into airtable
 
+### Uber eat Response
+
+
 # CLI
 python main.py --today_only: Scrap uniquement aujourd'hui
 python main.py: Scrap hier et aujourd'hui
 
 # Deployment
-
 * sudo env VISUAL=vim crontab -e (au lieu de 'sudo crontab -e' car nano est l'editeur par defaut)
 * on run avec sudo dans crontab donc on install les requirements.txt avec sudo
 * attention a donner les bonnes autorisations au fichier logs.log (lecture & ecriture)
@@ -28,3 +30,9 @@ python main.py: Scrap hier et aujourd'hui
 * installer postfix
 * log de cron: grep CRON /var/log/syslog
 
+# Logging
+* On a deux directory principale pour le projet Ubereats: UberEatScrapping & UberEatResponse
+* chaque de ces directory possede son propre fichier main.py et donc son propre fichier logs.log
+
+# Git
+* on utilise sudo avec les commandes git
