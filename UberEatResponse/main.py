@@ -45,7 +45,7 @@ HEADERS = {'Authorization': 'Bearer ' + parameter.AIRTABLE_API_KEY}
 if __name__ == "__main__":
     # Define the curl command
     logger.info("Start UberEats Response ...")
-    current_dir = os.getcwd()
+    current_dir = os.path.dirname(os.path.abspath(__file__))
     curl_name = os.path.join(current_dir, "files", "script.sh")
 
     bases_id, tickets_id, stores_id = airtable_api.retrieve_all_bases_tickets_and_stores()
