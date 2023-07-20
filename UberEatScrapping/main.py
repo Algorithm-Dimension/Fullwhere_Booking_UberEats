@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # =============================================================================
-# Created By  : Remy Adda & Arie Bonan
+# Created By: Remy Adda & Arie Bonan
 # Created Date: 2023
 # =============================================================================
 # Scrap UberEats reviews and insert them into Airtable
@@ -27,9 +27,15 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 warnings.filterwarnings('ignore', category=UserWarning, append=True)
 
+# Chemin absolu du script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler('logs.log')
+
+# Gestionnaire pour le fichier de logs dans le répertoire du script
+log_file_path = os.path.join(script_dir, 'logs.log')
+file_handler = logging.FileHandler(log_file_path)
 file_handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(pathname)s:%(lineno)d')
 file_handler.setFormatter(formatter)
@@ -42,8 +48,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     start_time = time.time()
+
     # Log files
-    # TODO: mettre tous les logs dans un meme fichier
     airtable_api.setup_logging(logger)
     utils.setup_logging(logger)
     scrap.setup_logging(logger)
@@ -60,7 +66,7 @@ if __name__ == "__main__":
     FROM_MONTH = yesterday_date.strftime("%m")
     FROM_DAY = yesterday_date.strftime("%d")
 
-    logger.info(100*"=")
+    logger.info(100 * "=")
     logger.info("{}/{}/{}".format(TO_DAY, TO_MONTH, TO_YEAR))
     logger.info(100 * "=")
 
@@ -78,65 +84,59 @@ if __name__ == "__main__":
 
     # 1 - Retrieve reviews for sub list of uuids (for each sublist of uuid, is associated a sub list
     # of records id, a base id, a ticket id and a store id
-    for sub_uuid_list, sub_record_id_list, base_id, \
-            ticket_id, store_in in \
-            zip(UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id):
+    for sub_uuid_list, sub_record_id_list, base_id, ticket_id, store_in in zip(UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id):
 
-        logger.info("Sub uuid list: {} - sub record id list: {} - base_id: {}"
-                    " - ticket_id: {} - store_id: {}".format(sub_uuid_list, sub_record_id_list,
-                                                             base_id, ticket_id, store_in))
+        logger.info("Sub uuid list: {} - sub record id list: {} - base_id: {} - ticket_id: {} - store_id: {}".format(sub_uuid_list, sub_record_id_list, base_id, ticket_id, store_in))
 
         if len(sub_uuid_list) != 0:
             # We scrap each restaurant one by one (otherwise there are errors,
             # we can not scrap a list of restaurant, values are wrong)
             for uuid, record_id in zip(sub_uuid_list, sub_record_id_list):
-                logger.info("We scrap restaurant uuid: {}".format(uuid))
-                logger.info("{} - Record id: {}".format(uuid, record_id))
+                logger.info("Scraping restaurant uuid: {}".format(uuid))
+                logger.info("UUID: {} - Record id: {}".format(uuid, record_id))
                 if args.today_only:
                     try:
-                        reviews = scrap.start_scrap([uuid], TO_YEAR, TO_MONTH, TO_DAY, TO_YEAR, TO_MONTH, TO_DAY,
-                                                    curl_name)
+                        reviews = scrap.start_scrap([uuid], TO_YEAR, TO_MONTH, TO_DAY, TO_YEAR, TO_MONTH, TO_DAY, curl_name)
                     except Exception as e:
                         traceback.print_exc()
-                        logger.error("{} - Error: {}".format(uuid, str(e)))
+                        logger.error("UUID: {} - Error: {}".format(uuid, str(e)))
                         reviews = None
                 else:
                     try:
                         reviews = scrap.start_scrap([uuid], FROM_YEAR, FROM_MONTH, FROM_DAY, TO_YEAR, TO_MONTH, TO_DAY, curl_name)
                     except Exception as e:
                         traceback.print_exc()
-                        logger.error("{} - Error: {}".format(uuid, str(e)))
+                        logger.error("UUID: {} - Error: {}".format(uuid, str(e)))
                         reviews = None
 
                 # 2 - Insert each review in airtable
                 # We write in ticket id table
-                logger.info("{} - Insert data into Airtable".format(uuid))
+                logger.info("UUID: {} - Inserting data into Airtable".format(uuid))
                 if reviews is None:
-                    logger.info("{} - Reviews is None: Error when scrapping sub_uuid_list: {} "
-                                "on {}/{}/{}".format(uuid, uuid, TO_DAY, TO_MONTH, TO_YEAR))
+                    logger.info("UUID: {} - Reviews is None: Error when scraping UUID: {} on {}/{}/{}".format(uuid, uuid, TO_DAY, TO_MONTH, TO_YEAR))
                 elif reviews and len(reviews) != 0:
-                    logger.info("{} There are reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
+                    logger.info("UUID: {} - There are reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
                     airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
 
-                    logger.info("{} - Lets reformat and insert into Airtable all the reviews".format(uuid))
+                    logger.info("UUID: {} - Reformatting and inserting all the reviews into Airtable".format(uuid))
                     for review in reviews:
                         # Reformat review following Airtable format
                         new_record = scrap.reformat_review(review)
                         new_record['🏠 Stores'] = [record_id]
-                        # Check if review_id exist
+                        # Check if review_id exists
                         review_id = review["uuid"]
-                        logger.info("{} - Review id: {}".format(uuid, review_id))
+                        logger.info("UUID: {} - Review id: {}".format(uuid, review_id))
                         review_id_exist = airtable_api.check_if_review_exist(review_id, base_id, ticket_id)
 
                         if not review_id_exist:
-                            logger.info("{} - Review id {} does not exist. Lets insert it".format(uuid, review_id))
+                            logger.info("UUID: {} - Review id {} does not exist. Inserting it".format(uuid, review_id))
                             airtable_api.create_new_record(airtable_connexion, new_record)
                             total_reviews += 1
                         else:
-                            logger.info("{} - Review id {} already exist.".format(uuid, review_id))
+                            logger.info("UUID: {} - Review id {} already exists.".format(uuid, review_id))
 
                 elif len(reviews) == 0:
-                    logger.info("{} - No reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
+                    logger.info("UUID: {} - No reviews on {}/{}/{}".format(uuid, TO_DAY, TO_MONTH, TO_YEAR))
                 else:
                     pass
 
@@ -145,11 +145,3 @@ if __name__ == "__main__":
     end_time = time.time()
     total_time_script = end_time - start_time
     logger.info("Durée totale du script: {}".format(total_time_script))
-
-
-
-
-
-
-
-
