@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     bases_id, tickets_id, stores_id = airtable_api.retrieve_all_bases_tickets_and_stores()
 
-    for base_id, ticket_id, store_id in tqdm(zip(bases_id, tickets_id, stores_id)):
+    for base_id, ticket_id, store_id in zip(bases_id, tickets_id, stores_id):
         logger.info("Connexion to base {} - ticket {} - store {}".format(base_id, ticket_id, store_id))
         airtable_connexion = airtable_api.airtable_access_specific_base_and_table(base_id, ticket_id)
         try:
