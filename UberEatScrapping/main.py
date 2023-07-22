@@ -79,7 +79,7 @@ if __name__ == "__main__":
     total_reviews = 0
 
     # Retrieve all uuids (restaurants), records id, base, tickets and stores ids
-    UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id = airtable_api.retrieve_all_uuids_and_records_ids()
+    UUID_LIST, RECORDS_IDS_LIST, bases_id, tickets_id, stores_id = airtable_api.retrieve_all_uuids_and_records_ids(5)
     logger.info(" °°° End of retrieving restaurants, records, bases, tickets, stores ids °°° ")
 
     # 1 - Retrieve reviews for sub list of uuids (for each sublist of uuid, is associated a sub list

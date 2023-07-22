@@ -135,10 +135,12 @@ def create_new_record(airtable_connexion, new_record):
     print('Created record:', created_record['fields'])
 
 
-def retrieve_all_uuids_and_records_ids():
+def retrieve_all_uuids_and_records_ids(fast_run=None):
     # 1 - Retrieve Bases & Tables Ids
     logger.info("Retriving bases, tickets and stores ids ...")
     bases_id, tickets_id, stores_id = retrieve_bases_tickets_stores_id()
+    if fast_run:
+        bases_id, tickets_id, stores_id = bases_id[:fast_run], tickets_id[:fast_run], stores_id[:fast_run]
     #bases_id, tickets_id, stores_id = bases_id[5:8], tickets_id[5:8], stores_id[5:8]
 
     all_uuids = []
